@@ -1,0 +1,37 @@
+{
+  "model_name": "EEGNet",
+  "data_name" : "dataname1",
+  "data_root_path" : ".\\dataset\\",
+  "save_logs_path": "./logs/",
+  "save_model_path": "./checkpoint/",
+  "learning_rate": 0.001,
+  "batch_size": 32,
+  "epochs": 50,
+  "repeat_time": 10,
+  "optimizer": "Adam",
+  "dropout_rate": 0.5,
+  "activation_function": "ReLU",
+  "loss_function": "CrossEntropyLoss",
+  "early_stopping": {
+    "Enable": "yes",
+    "monitor": "val_loss",
+    "patience": 10,
+    "restore_best_weights": true
+  },
+  "learning_rate_decay": "yes",
+  "init_seed": 42,
+  "data_split": {
+    "train":0.8,
+    "test": 0.1,
+    "val": 0.1
+  },
+
+  "Subject_sigal": {
+    "sigal": "yes",
+    "subject_name": "S1"
+  }
+
+
+
+
+}
