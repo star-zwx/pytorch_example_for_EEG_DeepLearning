@@ -2,6 +2,8 @@ import torch
 import numpy as np
 from torch.utils.data import Dataset
 import os
+from sklearn.model_selection import KFold
+import glob
 
 
 class EEGDataset(Dataset):
@@ -60,7 +62,7 @@ class EEGDataset(Dataset):
 
     def __getitem__(self, index):
 
-        EEG_npy_data = np.load(self.data_list[index],allow_pickle=True).item()  # 加载一个文件的npy
+        EEG_npy_data = np.load(self.data_list[index], allow_pickle=True).item()  # 加载一个文件的npy
 
         EEG_data = EEG_npy_data["data"]  # 获取EEG数据
         EEG_label = EEG_npy_data["label"]  # 获取数据对应的标签
@@ -69,3 +71,81 @@ class EEGDataset(Dataset):
         EEG_label = torch.tensor(EEG_label, dtype=torch.long)
 
         return EEG_data, EEG_label
+
+
+# 重写一个用于交叉验证的数据集类(这个暂时可以不用，脑子抽了没设计好)
+class EEGDatasetCrossValidation(EEGDataset):
+    def __init__(self, data_name, data_root_path, subject_No, ttv_selection, current_fold, num_folds=5):
+        super().__init__(data_name, data_root_path, subject_No)
+        self.num_folds = num_folds
+        self.__get_index_of_cross_val()  # 产生交叉验证的文件索引
+        self.ttv_selection = ttv_selection  # 选择加载训练集还是测试集还是验证集
+        self.txt_files_list = []
+        self.current_fold = current_fold
+        if self.ttv_selection == "train":
+            pattern = os.path.join(self.data_path_E, 'train*.txt')
+            self.txt_files_list = glob.glob(pattern)
+
+        elif self.ttv_selection == "test":
+            pattern = os.path.join(self.data_path_E, 'test*.txt')
+            self.txt_files_list = glob.glob(pattern)
+
+        else:
+            pattern = os.path.join(self.data_path_E, 'val*.txt')
+            self.txt_files_list = glob.glob(pattern)
+
+        current_file = self.txt_files_list[self.current_fold]
+        self.this_data_list = self._load_data_paths(current_file)
+    def __getitem__(self, index):
+        assert len(self.txt_files_list) == self.num_folds
+
+        one_data_path = self.this_data_list[index]
+        EEG_npy_data = np.load(one_data_path, allow_pickle=True).item()  # 加载一个文件的npy
+
+        EEG_data = EEG_npy_data["data"]  # 获取EEG数据
+        EEG_label = EEG_npy_data["label"]  # 获取数据对应的标签
+        # 将数据和标签转换为torch.Tensor
+        EEG_data = torch.tensor(EEG_data, dtype=torch.float32)
+        EEG_label = torch.tensor(EEG_label, dtype=torch.long)
+
+        return EEG_data, EEG_label
+
+    def __len__(self):
+        return len(self.this_data_list)
+
+    def _load_data_paths(self, file_path):
+        with open(file_path, 'r') as f:
+            data_paths = f.readlines()
+        # 去除每行末尾的换行符
+        data_paths = [path.strip() for path in data_paths]
+        return data_paths
+
+    def __get_index_of_cross_val(self):
+        # 产生k折交叉验证的数据路径索引文件
+        kf = KFold(n_splits=self.num_folds, shuffle=True, random_state=42)
+
+        # 遍历每一折
+        for fold, (train_val_index, test_index) in enumerate(kf.split(self.data_list)):
+            # 进一步将训练集和验证集划分
+            train_index, val_index = train_val_index[:int(0.8 * len(train_val_index))], train_val_index[int(0.8 * len(
+                train_val_index)):]
+
+            # 获取对应的数据路径
+            train_paths = np.array(self.data_list)[train_index]
+            val_paths = np.array(self.data_list)[val_index]
+            test_paths = np.array(self.data_list)[test_index]
+
+            # 保存到txt文件
+            with open(f'{self.data_path_E}\\train_fold_{fold}.txt', 'w') as f:
+                for path in train_paths:
+                    f.write(f"{path}\n")
+
+            with open(f'{self.data_path_E}\\val_fold_{fold}.txt', 'w') as f:
+                for path in val_paths:
+                    f.write(f"{path}\n")
+
+            with open(f'{self.data_path_E}\\test_fold_{fold}.txt', 'w') as f:
+                for path in test_paths:
+                    f.write(f"{path}\n")
+
+        print("数据地址索引已生成并保存到txt文件中。")

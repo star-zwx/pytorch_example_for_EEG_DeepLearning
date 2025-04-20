@@ -22,8 +22,14 @@ def model_trainer(para_config_dir):
     my_model.model_train()  # 模型训练
 
 
+def model_trainer_cross_validation(para_config_dir):  # 适合交叉验证的
+    my_model = ModelTrainCrossValidation(para_config_dir)
+    my_model.data_loader()
+    my_model.model_train()
+
+
 def result_drawer(json_file):
-    # 对保存的训练过程的数据画图，
+    # 对保存的训练过程的数据画图，注意：这个过程不适合交叉验证产生的数据绘图
     draw_picture = DrawData(json_file)  # 参数是日志文件的路径
     """
         对draw_picture()方法的参数填写说明
@@ -42,5 +48,8 @@ def result_drawer(json_file):
 
 
 if __name__ == '__main__':
-    model_trainer(para_config_dir)  #由于需要在模型训练完才能保存训练数据，所以训练和画图的代码不能同时执行
-    #result_drawer(r"logs/EEGNet-20250418_123734/logs.json")
+    # model_trainer(para_config_dir)  #由于需要在模型训练完才能保存训练数据，所以训练和画图的代码不能同时执行
+    # model_trainer_cross_validation(para_config_dir)
+    # result_drawer(r"logs/EEGNet-20250418_123734/logs.json")
+
+    pass

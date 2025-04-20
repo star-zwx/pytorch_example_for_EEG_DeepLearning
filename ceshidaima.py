@@ -3,7 +3,7 @@ import os
 from utils import *
 import plotly.graph_objects as go
 import pandas as pd
-
+from dataset import *
 
 def createdata():
     save_dir = "eeg_dataset"
@@ -98,8 +98,11 @@ def draw_table():
 
     plt.show()  # 显示图片
 
+def jiaocha():
+    jioacha = EEGDatasetCrossValidation(data_name = "dataname1", data_root_path="./dataset/", subject_No = "S1", ttv_selection = "train", current_fold = 0, num_folds=5)
+
 
 if __name__ == '__main__':
     # jsondata()
-    class_json()
+    # class_json()
     # draw_table()

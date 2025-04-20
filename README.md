@@ -103,6 +103,13 @@
         -0.8922807 , -0.67896014]], dtype=float32), 'label': 0}
 ```
 
+#### 4.20增加了K折交叉验证的训练逻辑
+```json
 
-
-
+"Cross_validation" : {
+    "selection": "yes",
+    "Fload_Num": 5
+  }
+```
+通过填写Fload_Num的值，控制K的值
+目前通过K折交叉验证的训练数据无法绘图，正在开发web端交互式图表绘制

@@ -9,6 +9,7 @@ from tqdm import tqdm
 
 from sklearn.metrics import accuracy_score, recall_score, f1_score
 
+
 class ModelTrainer():
     def __init__(self, para_config_dir):
         # 先对超参数做一些声明
@@ -29,9 +30,9 @@ class ModelTrainer():
         self.init_seed = self.para_config_dir["init_seed"]  # 获取随机种子
         self.data_split = self.para_config_dir["data_split"]  # 获取数据划分的比例
         self.Subject_sigal = self.para_config_dir["Subject_sigal"]  # 获取是否用单个被试或者全被试训练
-        self.data_logs_path = self.para_config_dir["save_logs_path"]
-        self.save_model_path = self.para_config_dir["save_model_path"]
-
+        self.data_logs_path = self.para_config_dir["save_logs_path"]  # 训练过程中的数据保存位置
+        self.save_model_path = self.para_config_dir["save_model_path"]  # 模型保存地址
+        self.Cross_validation = self.para_config_dir["Cross_validation"]  # 是否选择交叉验证的策略的配置
         # 声明数据加载器，训练集，测试集，验证集
         self.dataLoader_train = None
         self.dataLoader_test = None
@@ -54,7 +55,7 @@ class ModelTrainer():
             all_dataset = EEGDataset(self.data_name, self.data_root_path, self.Subject_sigal["subject_name"])  # 加载数据集
             train_dataset, val_dataset, test_dataset = data_split(all_dataset, self.data_split["train"],
                                                                   self.data_split["val"], self.data_split["test"])  #
-            print(train_dataset,val_dataset,test_dataset)
+            print(train_dataset, val_dataset, test_dataset)
             # 划分数据集
             self.dataLoader_train = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
             self.dataLoader_valid = DataLoader(val_dataset, batch_size=self.batch_size, shuffle=True)
@@ -64,13 +65,12 @@ class ModelTrainer():
         num_repeats = self.repeat_time
         # 获取当前时间，并格式化为字符串
         current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-        save_path = os.path.join(self.data_logs_path,f"{self.model_name}-{current_time}")
-
+        save_path = os.path.join(self.data_logs_path, f"{self.model_name}-{current_time}")
 
         all_results = {}
 
         for repeat in range(1, num_repeats + 1):
-            print(f"\n=======================Training Round  {repeat }  /  {self.repeat_time} =====================")
+            print(f"\n=======================Training Round  {repeat}  /  {self.repeat_time} =====================")
             self.model = self.initialize_model()
             criterion = self.initialize_loss()
             optimizer = self.initialize_optimizer(self.model)
@@ -134,15 +134,13 @@ class ModelTrainer():
             }
 
             # 保存最优模型
-            self.model_save(best_model_state, self.save_model_path, repeat,current_time)
+            self.model_save(best_model_state, self.save_model_path, repeat, current_time)
 
         # 保存整个 JSON 文件
-        save_json_path = os.path.join(save_path,"logs.json")
+        save_json_path = os.path.join(save_path, "logs.json")
         save_json(all_results, save_json_path)
 
-
-
-    def model_test(self,model,dataloader):
+    def model_test(self, model, dataloader):
         model.eval()
         y_true, y_pred = [], []
         with torch.no_grad():
@@ -154,7 +152,7 @@ class ModelTrainer():
                 y_true.extend(labels.numpy())
         return y_true, y_pred
 
-    def model_evaluation(self,dataloader,criterion):
+    def model_evaluation(self, dataloader, criterion):
 
         self.model.eval()
         total_loss, correct, total = 0, 0, 0
@@ -194,8 +192,124 @@ class ModelTrainer():
             raise ValueError(f"Unsupported optimizer: {self.optimizer_name}")
         return optimizer
 
-    def model_save(self, model_state_dict, save_path, repeat_index,current_time):
+    def model_save(self, model_state_dict, save_path, repeat_index, current_time):
         filename = f"best_model_repeat{repeat_index}-{current_time}.pth"
         full_path = os.path.join(save_path, filename)
         torch.save(model_state_dict, full_path)
         print(f"💾 Best model for Repeat {repeat_index} saved to: {full_path}")
+
+
+class ModelTrainCrossValidation(ModelTrainer):
+    def __init__(self, para_config_dir):
+        super().__init__(para_config_dir)
+        self.dataset = None
+
+    def data_loader(self):
+        if self.Subject_sigal["sigal"] == "yes":
+            all_dataset = EEGDataset(self.data_name, self.data_root_path, self.Subject_sigal["subject_name"])  # 加载数据集
+            self.dataset = all_dataset  # 将整个数据集赋值给 self.dataset
+
+    def model_train(self):
+        num_repeats = self.repeat_time
+        k_folds = self.Cross_validation["Fload_Num"]  # 设置k折交叉验证的折数
+        kfold = KFold(n_splits=k_folds, shuffle=True)
+
+        # 获取当前时间，并格式化为字符串
+        current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+        save_path = os.path.join(self.data_logs_path, f"{self.model_name}-{current_time}")
+
+        all_results = {}
+
+        for repeat in range(1, num_repeats + 1):
+            print(f"\n=======================Training Round  {repeat}  /  {self.repeat_time} =====================")
+
+            fold_results = {}
+            for fold, (train_ids, test_ids) in enumerate(kfold.split(self.dataset)):
+                print(f"\n----------------------- Fold {fold + 1} / {k_folds} -----------------------")
+
+                # 创建数据加载器
+                train_subsampler = torch.utils.data.SubsetRandomSampler(train_ids)
+                test_subsampler = torch.utils.data.SubsetRandomSampler(test_ids)
+
+                train_loader = torch.utils.data.DataLoader(self.dataset, batch_size=self.batch_size,
+                                                           sampler=train_subsampler)
+                test_loader = torch.utils.data.DataLoader(self.dataset, batch_size=self.batch_size,
+                                                          sampler=test_subsampler)
+
+                self.model = self.initialize_model()
+                criterion = self.initialize_loss()
+                optimizer = self.initialize_optimizer(self.model)
+
+                fold_key = f"fold_{fold + 1}"
+                fold_results[fold_key] = {"epochs": [], "summary": {}}
+                best_val_acc = 0
+                best_model_state = None
+
+                for epoch in range(1, self.epochs + 1):
+                    self.model.train()
+                    train_loss, correct, total = 0, 0, 0
+
+                    for data, labels in train_loader:
+                        data, labels = data.to(self.device), labels.to(self.device)
+                        optimizer.zero_grad()
+                        outputs = self.model(data)
+                        loss = criterion(outputs, labels)
+                        loss.backward()
+                        optimizer.step()
+                        train_loss += loss.item()
+                        _, predicted = torch.max(outputs.data, 1)
+                        total += labels.size(0)
+                        correct += (predicted == labels).sum().item()
+
+                    avg_train_loss = train_loss / len(train_loader)
+                    train_acc = correct / total
+
+                    val_acc, val_loss = self.model_evaluation(test_loader, criterion)
+
+                    if val_acc > best_val_acc:
+                        best_val_acc = val_acc
+                        best_model_state = self.model.state_dict()
+
+                    fold_results[fold_key]["epochs"].append({
+                        "epoch": epoch,
+                        "train_loss": avg_train_loss,
+                        "val_loss": val_loss,
+                        "train_acc": train_acc,
+                        "val_acc": val_acc
+                    })
+
+                    print(
+                        f"✅ Repeat {repeat}/{num_repeats} | Fold {fold + 1}/{k_folds} | 📈 Epoch [{epoch}/{self.epochs}] "
+                        f"🔧 Train Loss: {avg_train_loss:.4f} | 🎯 Train Acc: {train_acc:.4f} | "
+                        f"📊 Val Loss: {val_loss:.4f} | 💡 Val Acc: {val_acc:.4f}"
+                    )
+
+                # 加载最佳模型评估测试集
+                self.model.load_state_dict(best_model_state)
+                test_acc, _ = self.model_evaluation(test_loader, criterion)
+                y_true, y_pred = self.model_test(self.model, test_loader)
+                recall = recall_score(y_true, y_pred, average="macro")
+                f1 = f1_score(y_true, y_pred, average="macro")
+
+                fold_results[fold_key]["summary"] = {
+                    "best_val_acc": best_val_acc,
+                    "final_test_acc": test_acc,
+                    "recall": recall,
+                    "f1": f1
+                }
+
+                # 保存最优模型
+                self.model_save(best_model_state, self.save_model_path, repeat, current_time, fold + 1)
+
+            all_results[f"repeat_{repeat}"] = fold_results
+
+        # 保存整个 JSON 文件
+        save_json_path = os.path.join(save_path, "logs.json")
+        save_json(all_results, save_json_path)
+
+
+    def model_save(self, model_state_dict, save_path, repeat_index, current_time,fold):
+            filename = f"best_model_repeat{repeat_index}-{fold}-{current_time}.pth"
+            full_path = os.path.join(save_path, filename)
+            torch.save(model_state_dict, full_path)
+            print(f"💾 Best model for Repeat {repeat_index} saved to: {full_path}")

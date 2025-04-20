@@ -5,7 +5,7 @@
   "save_logs_path": "./logs/",
   "save_model_path": "./checkpoint/",
   "learning_rate": 0.001,
-  "batch_size": 32,
+  "batch_size": 2,
   "epochs": 50,
   "repeat_time": 10,
   "optimizer": "Adam",
@@ -29,6 +29,10 @@
   "Subject_sigal": {
     "sigal": "yes",
     "subject_name": "S1"
+  },
+  "Cross_validation": {
+    "selection": "yes",
+    "Fload_Num": 5
   }
 
 
