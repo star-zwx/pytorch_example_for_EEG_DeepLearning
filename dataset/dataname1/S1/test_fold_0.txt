@@ -1,4 +1,0 @@
-.\dataset\dataname1\S1\session1\sample_0.npy
-.\dataset\dataname1\S1\session1\sample_1.npy
-.\dataset\dataname1\S1\session2\sample_5.npy
-.\dataset\dataname1\S1\session2\sample_7.npy
