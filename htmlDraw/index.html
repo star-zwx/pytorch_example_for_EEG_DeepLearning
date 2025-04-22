@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Home - My Admin Template</title>
+
+	<!-- Main Styles -->
+	<link rel="stylesheet" href="assets/styles/style-horizontal.min.css">
+	
+	<!-- Material Design Icon -->
+	<link rel="stylesheet" href="assets/fonts/material-design/css/materialdesignicons.css">
+
+	<!-- mCustomScrollbar -->
+	<link rel="stylesheet" href="assets/plugin/mCustomScrollbar/jquery.mCustomScrollbar.min.css">
+
+	<!-- Waves Effect -->
+	<link rel="stylesheet" href="assets/plugin/waves/waves.min.css">
+
+	<!-- Sweet Alert -->
+	<link rel="stylesheet" href="assets/plugin/sweet-alert/sweetalert.css">
+	
+	<!-- Morris Chart -->
+	<link rel="stylesheet" href="assets/plugin/chart/morris/morris.css">
+
+	<!-- FullCalendar -->
+	<link rel="stylesheet" href="assets/plugin/fullcalendar/fullcalendar.min.css">
+	<link rel="stylesheet" href="assets/plugin/fullcalendar/fullcalendar.print.css" media='print'>
+
+</head>
+
+<body>
+<header class="fixed-header">
+	<div class="header-top">
+		<div class="container">
+			<div class="pull-left">
+				<a href="index.html" class="logo"><i class="ico mdi mdi-cube-outline"></i>深度学习图表分析</a>
+			</div>
+			<!-- /.pull-left -->
+			<div class="pull-right">
+				<div class="ico-item hidden-on-desktop">
+					<button type="button" class="menu-button js__menu_button fa fa-bars waves-effect waves-light"></button>
+				</div>
+				<!-- /.ico-item hidden-on-desktop -->
+				<div class="ico-item">
+					<a href="#" class="ico-item mdi mdi-magnify js__toggle_open" data-target="#searchform-header"></a>
+					<form action="#" id="searchform-header" class="searchform js__toggle"><input type="search" placeholder="Search..." class="input-search"><button class="mdi mdi-magnify button-search" type="submit"></button></form>
+					<!-- /.searchform -->
+				</div>
+
+				<div class="ico-item">
+					<a href="#" class="ico-item mdi mdi-account js__toggle_open" data-target="#user-status"></a>
+					<div id="user-status" class="user-status js__toggle">
+						<a href="#" class="avatar"><img src="assets/images/avatar.png" alt=""><span class="status online"></span></a>
+						<h5 class="name"><a href="profile.html">Emily Stanley</a></h5>
+						<h5 class="position">Administrator</h5>
+						<!-- /.name -->
+						<div class="control-items">
+							<div class="control-item"><a href="#" title="Settings"><i class="fa fa-gear"></i></a></div>
+							<div class="control-item"><a href="#" class="js__logout" title="Log out"><i class="fa fa-power-off"></i></a></div>
+						</div>
+						<!-- /.control-items -->
+					</div>
+					<!-- /#user-status -->
+				</div>
+				<!-- /.ico-item -->
+			</div>
+			<!-- /.pull-right -->
+		</div>
+		<!-- /.container -->
+	</div>
+	<!-- /.header-top -->
+	<nav class="nav-horizontal">
+		<button type="button" class="menu-close hidden-on-desktop js__close_menu"><i class="fa fa-times"></i><span>CLOSE</span></button>
+		<div class="container">
+			
+			<ul class="menu">
+					<li class="current">
+						<a href="index.html"><i class="ico mdi mdi-home"></i><span>主页总体效果预览</span></a>
+					</li>
+
+					<li>
+						<a href="lossfunction.html"><i class="fa fa-hourglass"></i><span>损失函数曲线</span></a>
+					</li>
+
+
+					<li>
+						<a href="summeryfunction.html"><i class="ico mdi mdi-email"></i><span>绘制总体性能曲线</span></a>
+					</li>
+
+			</ul>
+			<!-- /.menu -->
+		</div>
+		<!-- /.container -->
+	</nav>
+	<!-- /.nav-horizontal -->
+</header>
+<!-- /.fixed-header -->
+
+<div id="wrapper">
+	<div class="main-content container">
+		<div class="row small-spacing">
+			<div class="col-xs-12">
+
+				<div class="box-content card white">
+					<h4 class="box-title">选择文件及类型</h4>
+					<!-- /.box-title -->
+					<div class="card-content">
+						<div class="row small-spacing">
+							<div class="form-group">
+								<label for="exampleInputFile">文件输入</label>
+								<input type="file" id="exampleInputFile" accept=".json">
+								<p class="help-block">请选择文件后，确认是否是交叉验证训练.</p>
+							</div>
+							<div class="checkbox margin-bottom-20">
+								<input type="checkbox" id="chk-1"><label for="chk-1">交叉验证训练模式</label>
+							</div>
+
+							<button type="button" class="btn btn-success waves-effect waves-light" id="btn-search">上传文件</button>
+
+						</div>
+						<!-- /.row -->
+					</div>
+					<!-- /.card-content -->
+				</div>
+
+
+				<!-- /.box-content -->
+			</div>
+			<!-- /.col-xs-12 -->
+
+			<div class="col-lg-4 col-xs-12">
+				<div class="box-content">
+					<h4 class="box-title text-info">重复实验数</h4>
+					<!-- /.box-title -->
+					<div class="dropdown js__drop_down">
+						<a href="#" class="dropdown-icon glyphicon glyphicon-option-vertical js__drop_down_button"></a>
+						<ul class="sub-menu">
+							<li><a href="#">Action</a></li>
+							<li><a href="#">Another action</a></li>
+							<li><a href="#">Something else there</a></li>
+							<li class="split"></li>
+							<li><a href="#">Separated link</a></li>
+						</ul>
+						<!-- /.sub-menu -->
+					</div>
+					<!-- /.dropdown js__dropdown -->
+					<div class="content widget-stat">
+						<div id="traffic-sparkline-chart-1" class="left-content margin-top-15"></div>
+						<!-- /#traffic-sparkline-chart-1 -->
+						<div class="right-content">
+							<h2 class="counter text-info" id="repeat_num">278</h2>
+							<!-- /.counter -->
+							<p class="text text-info">repeat number</p>
+							<!-- /.text -->
+						</div>
+						<!-- .right-content -->
+					</div>
+					<!-- /.content widget-stat -->
+				</div>
+				<!-- /.box-content -->
+			</div>
+			<!-- /.col-lg-4 col-xs-12 -->
+
+			<div class="col-lg-4 col-xs-12">
+				<div class="box-content">
+					<h4 class="box-title text-success">Epoch数目</h4>
+					<!-- /.box-title -->
+					<div class="dropdown js__drop_down">
+						<a href="#" class="dropdown-icon glyphicon glyphicon-option-vertical js__drop_down_button"></a>
+						<ul class="sub-menu">
+							<li><a href="#">Action</a></li>
+							<li><a href="#">Another action</a></li>
+							<li><a href="#">Something else there</a></li>
+							<li class="split"></li>
+							<li><a href="#">Separated link</a></li>
+						</ul>
+						<!-- /.sub-menu -->
+					</div>
+					<!-- /.dropdown js__dropdown -->
+					<div class="content widget-stat">
+						<div id="traffic-sparkline-chart-2" class="left-content margin-top-10"></div>
+						<!-- /#traffic-sparkline-chart-2 -->
+						<div class="right-content">
+							<h2 class="counter text-success" id="epoch_num">36%</h2>
+							<!-- /.counter -->
+							<p class="text text-success">Epoch Num</p>
+							<!-- /.text -->
+						</div>
+						<!-- .right-content -->
+					</div>
+					<!-- /.content widget-stat -->
+				</div>
+				<!-- /.box-content -->
+			</div>
+			<!-- /.col-lg-4 col-xs-12 -->
+
+			<div class="col-lg-4 col-xs-12">
+				<div class="box-content">
+					<h4 class="box-title text-success">模型最佳准确率</h4>
+					<!-- /.box-title -->
+					<div class="dropdown js__drop_down">
+						<a href="#" class="dropdown-icon glyphicon glyphicon-option-vertical js__drop_down_button"></a>
+						<ul class="sub-menu">
+							<li><a href="#">Action</a></li>
+							<li><a href="#">Another action</a></li>
+							<li><a href="#">The Best ACC</a></li>
+							<li class="split"></li>
+							<li><a href="#">Separated link</a></li>
+						</ul>
+						<!-- /.sub-menu -->
+					</div>
+					<!-- /.dropdown js__dropdown -->
+					<div class="content widget-stat">
+						<div id="traffic-sparkline-chart-3" class="left-content"></div>
+						<!-- /#traffic-sparkline-chart-3 -->
+						<div class="right-content">
+							<h2 class="counter text-danger" id="bestacc">849 <i class="fa fa-angle-double-up"></i></h2>
+							<!-- /.counter -->
+							<p class="text text-danger">The Best ACC</p>
+							<!-- /.text -->
+						</div>
+						<!-- .right-content -->
+					</div>
+					<!-- /.content widget-stat -->
+				</div>
+				<!-- /.box-content -->
+			</div>
+			<!-- /.col-lg-4 col-xs-12 -->
+
+			<div class="col-lg-6 col-xs-12">
+				<div class="box-content">
+					<h4 class="box-title">总体平均性能</h4>
+					<!-- /.box-title -->
+					<div class="dropdown js__drop_down">
+						<a href="#" class="dropdown-icon glyphicon glyphicon-option-vertical js__drop_down_button"></a>
+						<ul class="sub-menu">
+							<li><a href="#">Action</a></li>
+							<li><a href="#">Another action</a></li>
+							<li><a href="#">Something else there</a></li>
+							<li class="split"></li>
+							<li><a href="#">Separated link</a></li>
+						</ul>
+						<!-- /.sub-menu -->
+					</div>
+					<!-- /.dropdown js__dropdown -->
+					<div id="bar-morris-chart" class="morris-chart" style="height: 240px"></div>
+					<div class="text-center">
+						<ul class="list-inline morris-chart-detail-list">
+							<li><i class="fa fa-circle"></i>train</li>
+							<li><i class="fa fa-circle"></i>test</li>
+							<li><i class="fa fa-circle"></i>val</li>
+						</ul>
+					</div>
+					<!-- /#bar-morris-chart.morris-chart -->
+				</div>
+				<!-- /.box-content -->
+			</div>
+			<!-- /.col-lg-6 col-xs-12 -->
+
+			<div class="col-lg-6 col-xs-12">
+				<div class="box-content">
+					<h4 class="box-title">数据划分占比</h4>
+					<!-- /.box-title -->
+					<div class="dropdown js__drop_down">
+						<a href="#" class="dropdown-icon glyphicon glyphicon-option-vertical js__drop_down_button"></a>
+						<ul class="sub-menu">
+							<li><a href="#">Action</a></li>
+							<li><a href="#">Another action</a></li>
+							<li><a href="#">Something else there</a></li>
+							<li class="split"></li>
+							<li><a href="#">Separated link</a></li>
+						</ul>
+						<!-- /.sub-menu -->
+					</div>
+					<!-- /.dropdown js__dropdown -->
+					<div id="donut-morris-chart" class="morris-chart" style="height: 240px"></div>
+					<div class="text-center">
+						<ul class="list-inline morris-chart-detail-list">
+							<li><i class="fa fa-circle"></i>train</li>
+							<li><i class="fa fa-circle"></i>test</li>
+							<li><i class="fa fa-circle"></i>val</li>
+						</ul>
+					</div>
+					<!-- /#donut-morris-chart.morris-chart -->
+				</div>
+				<!-- /.box-content -->
+			</div>
+			<!-- /.col-lg-6 col-xs-12 -->
+		</div>
+		<!-- /.row -->
+
+		<div class="row small-spacing">
+			<div class="col-lg-3 col-md-6 col-xs-12">
+				<div class="box-content bg-success text-white">
+					<div class="statistics-box with-icon">
+						<i class="ico small fa fa-diamond"></i>
+						<p class="text text-white">最佳验证集准确率</p>
+						<h2 class="counter" id="bestvalacc">72943</h2>
+					</div>
+				</div>
+				<!-- /.box-content -->
+			</div>
+			<!-- /.col-lg-3 col-md-6 col-xs-12 -->
+			<div class="col-lg-3 col-md-6 col-xs-12">
+				<div class="box-content bg-info text-white">
+					<div class="statistics-box with-icon">
+						<i class="ico small fa fa-download"></i>
+						<p class="text text-white">最佳测试集准确率</p>
+						<h2 class="counter" id="bestacc1">6382</h2>
+					</div>
+				</div>
+				<!-- /.box-content -->
+			</div>
+			<!-- /.col-lg-3 col-md-6 col-xs-12 -->
+			<div class="col-lg-3 col-md-6 col-xs-12">
+				<div class="box-content bg-danger text-white">
+					<div class="statistics-box with-icon">
+						<i class="ico small fa fa-bug"></i>
+						<p class="text text-white">最佳F1值</p>
+						<h2 class="counter" id="bestf1">12564</h2>
+					</div>
+				</div>
+				<!-- /.box-content -->
+			</div>
+			<!-- /.col-lg-3 col-md-6 col-xs-12 -->
+			<div class="col-lg-3 col-md-6 col-xs-12">
+				<div class="box-content bg-warning text-white">
+					<div class="statistics-box with-icon">
+						<i class="ico small fa fa-usd"></i>
+						<p class="text text-white">最佳召回率</p>
+						<h2 class="counter" id="bestrecall">2,637</h2>
+					</div>
+				</div>
+				<!-- /.box-content -->
+			</div>
+			<!-- /.col-lg-3 col-md-6 col-xs-12 -->
+		</div>
+		<!-- .row -->
+
+
+		<!-- /.row -->		
+		<footer class="footer">
+			<ul class="list-inline">
+				<li>Copyright &copy; 2025.Changzhou Univerity zwx .</li>
+				<li><a href="#">Privacy</a></li>
+				<li><a href="#">Terms</a></li>
+				<li><a href="#">Help</a></li>
+			</ul>
+		</footer>
+	</div>
+	<!-- /.main-content -->
+</div><!--/#wrapper -->
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+
+		<script src="assets/script/html5shiv.min.js"></script>
+		<script src="assets/script/respond.min.js"></script>
+	<![endif]-->
+	<!-- 
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+
+	<script src="assets/scripts/jquery.min.js"></script>
+	<script src="assets/scripts/modernizr.min.js"></script>
+	<script src="assets/plugin/bootstrap/js/bootstrap.min.js"></script>
+	<script src="assets/plugin/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="assets/plugin/nprogress/nprogress.js"></script>
+	<script src="assets/plugin/sweet-alert/sweetalert.min.js"></script>
+	<script src="assets/plugin/waves/waves.min.js"></script>
+
+	<!-- Morris Chart -->
+	<script src="assets/plugin/chart/morris/morris.min.js"></script>
+	<script src="assets/plugin/chart/morris/raphael-min.js"></script>
+	<script src="assets/scripts/chart.morris.init.min.js"></script>
+
+	<!-- Flot Chart -->
+	<script src="assets/plugin/chart/plot/jquery.flot.min.js"></script>
+	<script src="assets/plugin/chart/plot/jquery.flot.tooltip.min.js"></script>
+	<script src="assets/plugin/chart/plot/jquery.flot.categories.min.js"></script>
+	<script src="assets/plugin/chart/plot/jquery.flot.pie.min.js"></script>
+	<script src="assets/plugin/chart/plot/jquery.flot.stack.min.js"></script>
+	<script src="assets/scripts/chart.flot.init.min.js"></script>
+
+	<!-- Sparkline Chart -->
+	<script src="assets/plugin/chart/sparkline/jquery.sparkline.min.js"></script>
+	<script src="assets/scripts/chart.sparkline.init.min.js"></script>
+
+	<!-- FullCalendar -->
+	<script src="assets/plugin/moment/moment.js"></script>
+	<script src="assets/plugin/fullcalendar/fullcalendar.min.js"></script>
+	<script src="assets/scripts/fullcalendar.init.js"></script>
+
+	<script src="assets/scripts/main.min.js"></script>
+	<script src="assets/scripts/horizontal-menu.min.js"></script>
+<script>
+	$(document).ready(function() {
+		// 当点击上传文件按钮时触发
+		$('#btn-search').click(function() {
+			const fileInput = $('#exampleInputFile')[0];
+			const file = fileInput.files[0];
+
+			if (file) {
+				const reader = new FileReader();
+
+				reader.onload = function(e) {
+					try {
+						// 解析 JSON 数据
+						const jsonData = JSON.parse(e.target.result);
+						console.log('上传的 JSON 数据:', jsonData);
+
+						storeData(jsonData); //将数据保存在浏览器本地，供其他页面使用
+
+						// 根据是否勾选交叉验证训练模式进行不同的处理
+						const checkbox = document.getElementById('chk-1');
+
+            			// 判断复选框是否被选中
+						if (checkbox.checked) {
+                		handleCrossValidation(jsonData);
+            			} else {
+                		handleRegular(jsonData);
+            			}
+
+
+						// 将数据保存到全局变量（可选）
+						window.uploadedData = jsonData;
+
+						// 显示成功消息
+						swal("成功", "JSON 文件已成功加载！", "success");
+					} catch (error) {
+						// 如果解析失败，显示错误消息
+						swal("错误", "无法解析 JSON 文件。请确保文件格式正确。", "error");
+						console.error('解析 JSON 失败:', error);
+					}
+				};
+
+				reader.onerror = function(e) {
+					// 读取文件时发生错误
+					swal("错误", "读取文件时发生错误。", "error");
+					console.error('读取文件失败:', e.target.error);
+				};
+
+				reader.readAsText(file); // 以文本形式读取文件
+			} else {
+				// 如果没有选择文件，提示用户
+				swal("提示", "请先选择一个 JSON 文件。", "warning");
+			}
+		});
+
+		// 处理交叉验证训练模式的函数
+		function handleCrossValidation(data) {
+
+			// 检查必要的字段
+			if (data) {
+
+				// 计算以"repeat_"开头的键的数量
+        		let repeatCount = Object.keys(data).filter(key => key.startsWith('repeat_')).length;
+				const epochdata = data["repeat_1"]["fold_1"]["epochs"];
+				const epochnum = epochdata.length;
+				// 初始化一个数组来存储所有的final_test_acc值
+        		const finalTestAccValues = [];
+				const finalValAccValues = [];
+				const finalF1Values = [];
+				const finalRecallValues = [];
+
+        // 遍历每个repeat对象
+        for (const repeatKey in data) {
+            if (data.hasOwnProperty(repeatKey) && repeatKey.startsWith('repeat_')) {
+                const repeatObject = data[repeatKey];
+
+                // 遍历每个fold对象
+                for (const foldKey in repeatObject) {
+                    if (repeatObject.hasOwnProperty(foldKey)) {
+                        const foldObject = repeatObject[foldKey];
+
+                        // 检查fold对象是否包含summary字段
+                        if (foldObject.hasOwnProperty('summary') && foldObject.summary.hasOwnProperty('final_test_acc')) {
+                            // 将final_test_acc值添加到数组中
+                            finalTestAccValues.push(foldObject.summary.final_test_acc);
+							finalValAccValues.push(foldObject.summary.best_val_acc);
+							finalF1Values.push(foldObject.summary.f1);
+							finalRecallValues.push(foldObject.summary.recall);
+
+                        }
+
+                    }
+                }
+            }
+        }
+
+        		// 计算最大的final_test_acc值
+        		const maxFinalTestAcc = Math.max(...finalTestAccValues);
+
+				const maxFinalValAcc = Math.max(...finalValAccValues);
+				const maxFinalF1 = Math.max(...finalF1Values);
+				const maxRecall = Math.max(...finalRecallValues);
+
+        		// 获取要更新的HTML元素
+        		const repeatNumElement = document.getElementById('repeat_num');
+				const epoch_num_element = document.getElementById('epoch_num');
+				const bestacc = document.getElementById('bestacc');
+				const bestacc1 = document.getElementById('bestacc1')
+				const bestvalacc = document.getElementById('bestvalacc');
+				const bestf1 = document.getElementById('bestf1');
+				const bestrecall = document.getElementById('bestrecall');
+
+
+
+
+        		// 更新HTML内容
+        		repeatNumElement.textContent = repeatCount;
+				epoch_num_element.textContent = epochnum;
+				bestacc.textContent = maxFinalTestAcc;
+				bestvalacc.textContent = maxFinalValAcc;
+				bestf1.textContent = maxFinalF1;
+				bestrecall.textContent = maxRecall;
+				bestacc1.textContent = maxFinalTestAcc;
+
+			} else {
+				swal("警告", "上传的 JSON 数据缺少交叉验证的相关字段。", "warning");
+				console.warn('JSON 数据缺少交叉验证的相关字段');
+			}
+		}
+
+		function handleRegular(data) {
+
+			// 检查必要的字段
+			if (data) {
+
+				// 计算以"repeat_"开头的键的数量
+        		let repeatCount = Object.keys(data).filter(key => key.startsWith('repeat_')).length;
+				const epochdata = data["repeat_1"]["epochs"];
+				const epochnum = epochdata.length;
+				// 初始化一个数组来存储所有的final_test_acc值
+        		const finalTestAccValues = [];
+				const finalValAccValues = [];
+				const finalF1Values = [];
+				const finalRecallValues = [];
+
+        // 遍历每个repeat对象
+            for (const repeatKey in data) {
+                if (data.hasOwnProperty(repeatKey) && repeatKey.startsWith('repeat_')) {
+                    const repeatObject = data[repeatKey];
+
+                    // 检查repeat对象是否包含summary字段
+                    if (repeatObject.hasOwnProperty('summary')) {
+                        const summary = repeatObject.summary;
+
+                        // 将各个指标的值添加到相应的数组中
+                        finalTestAccValues.push(summary.final_test_acc);
+                        finalValAccValues.push(summary.best_val_acc);
+                        finalF1Values.push(summary.f1);
+                        finalRecallValues.push(summary.recall);
+                    }
+                }
+            }
+
+        		// 计算最大的final_test_acc值
+        		const maxFinalTestAcc = Math.max(...finalTestAccValues);
+
+				const maxFinalValAcc = Math.max(...finalValAccValues);
+				const maxFinalF1 = Math.max(...finalF1Values);
+				const maxRecall = Math.max(...finalRecallValues);
+
+        		// 获取要更新的HTML元素
+        		const repeatNumElement = document.getElementById('repeat_num');
+				const epoch_num_element = document.getElementById('epoch_num');
+				const bestacc = document.getElementById('bestacc');
+				const bestacc1 = document.getElementById('bestacc1')
+				const bestvalacc = document.getElementById('bestvalacc');
+				const bestf1 = document.getElementById('bestf1');
+				const bestrecall = document.getElementById('bestrecall');
+
+
+
+
+        		// 更新HTML内容
+        		repeatNumElement.textContent = repeatCount;
+				epoch_num_element.textContent = epochnum;
+				bestacc.textContent = maxFinalTestAcc;
+				bestvalacc.textContent = maxFinalValAcc;
+				bestf1.textContent = maxFinalF1;
+				bestrecall.textContent = maxRecall;
+				bestacc1.textContent = maxFinalTestAcc;
+
+			} else {
+				swal("警告", "上传的 JSON 数据缺少交叉验证的相关字段。", "warning");
+				console.warn('JSON 数据缺少交叉验证的相关字段');
+			}
+		}
+
+		// 示例：渲染交叉验证图表的函数
+		function renderCrossValidationChart(metrics) {
+			// 确保 Morris.js 已加载
+			if (typeof Morris === 'undefined') {
+				swal("错误", "图表库加载失败。", "error");
+				return;
+			}
+
+			// 假设有一个 div 用于显示图表，id 为 cross-validation-chart
+			// <div id="cross-validation-chart" style="height: 240px;"></div>
+
+			new Morris.Line({
+				element: 'cross-validation-chart',
+				data: metrics.map(metric => ({
+					epoch: metric.epoch,
+					accuracy: metric.accuracy
+				})),
+				xkey: 'epoch',
+				ykeys: ['accuracy'],
+				labels: ['准确率'],
+				lineColors: ['#3498db'],
+				pointSize: 3,
+				hideHover: 'auto',
+				resize: true
+			});
+		}
+
+		// 示例：渲染常规训练图表的函数
+		function renderRegularChart(metrics) {
+			// 确保 Morris.js 已加载
+			if (typeof Morris === 'undefined') {
+				swal("错误", "图表库加载失败。", "error");
+				return;
+			}
+
+			// 假设有一个 div 用于显示图表，id 为 regular-chart
+			// <div id="regular-chart" style="height: 240px;"></div>
+
+			new Morris.Line({
+				element: 'regular-chart',
+				data: metrics.map(metric => ({
+					epoch: metric.epoch,
+					accuracy: metric.accuracy
+				})),
+				xkey: 'epoch',
+				ykeys: ['accuracy'],
+				labels: ['准确率'],
+				lineColors: ['#e74c3c'],
+				pointSize: 3,
+				hideHover: 'auto',
+				resize: true
+			});
+		}
+
+		function storeData(jsonData) {
+            // 将JSON数据存储到LocalStorage中
+            localStorage.setItem('jsonData', JSON.stringify(jsonData));
+            alert('Data stored successfully!');
+        }
+
+
+	});
+
+
+</script>
+</body>
+</html>

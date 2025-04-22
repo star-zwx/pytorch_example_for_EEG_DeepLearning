@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Dynamic Chart - My Admin Template</title>
+
+	<!-- Main Styles -->
+	<link rel="stylesheet" href="assets/styles/style-horizontal.min.css">
+
+	<!-- Material Design Icon -->
+	<link rel="stylesheet" href="assets/fonts/material-design/css/materialdesignicons.css">
+
+	<!-- mCustomScrollbar -->
+	<link rel="stylesheet" href="assets/plugin/mCustomScrollbar/jquery.mCustomScrollbar.min.css">
+
+	<!-- Waves Effect -->
+	<link rel="stylesheet" href="assets/plugin/waves/waves.min.css">
+
+	<!-- Sweet Alert -->
+	<link rel="stylesheet" href="assets/plugin/sweet-alert/sweetalert.css">
+
+</head>
+
+<body>
+<header class="fixed-header">
+	<div class="header-top">
+		<div class="container">
+			<div class="pull-left">
+				<a href="index.html" class="logo"><i class="ico mdi mdi-cube-outline"></i>深度学习图表分析</a>
+			</div>
+			<!-- /.pull-left -->
+			<div class="pull-right">
+				<div class="ico-item hidden-on-desktop">
+					<button type="button" class="menu-button js__menu_button fa fa-bars waves-effect waves-light"></button>
+				</div>
+				<!-- /.ico-item hidden-on-desktop -->
+				<div class="ico-item">
+					<a href="#" class="ico-item mdi mdi-magnify js__toggle_open" data-target="#searchform-header"></a>
+					<form action="#" id="searchform-header" class="searchform js__toggle"><input type="search" placeholder="Search..." class="input-search"><button class="mdi mdi-magnify button-search" type="submit"></button></form>
+					<!-- /.searchform -->
+				</div>
+
+				<div class="ico-item">
+					<a href="#" class="ico-item mdi mdi-account js__toggle_open" data-target="#user-status"></a>
+					<div id="user-status" class="user-status js__toggle">
+						<a href="#" class="avatar"><img src="assets/images/avatar.png" alt=""><span class="status online"></span></a>
+						<h5 class="name"><a href="profile.html">Emily Stanley</a></h5>
+						<h5 class="position">Administrator</h5>
+						<!-- /.name -->
+						<div class="control-items">
+							<div class="control-item"><a href="#" title="Settings"><i class="fa fa-gear"></i></a></div>
+							<div class="control-item"><a href="#" class="js__logout" title="Log out"><i class="fa fa-power-off"></i></a></div>
+						</div>
+						<!-- /.control-items -->
+					</div>
+					<!-- /#user-status -->
+				</div>
+				<!-- /.ico-item -->
+			</div>
+			<!-- /.pull-right -->
+		</div>
+		<!-- /.container -->
+	</div>
+	<!-- /.header-top -->
+	<nav class="nav-horizontal">
+		<button type="button" class="menu-close hidden-on-desktop js__close_menu"><i class="fa fa-times"></i><span>CLOSE</span></button>
+		<div class="container">
+
+			<ul class="menu">
+					<li >
+						<a href="index.html"><i class="ico mdi mdi-home"></i><span>主页总体效果预览</span></a>
+					</li>
+
+					<li >
+						<a href="lossfunction.html"><i class="fa fa-hourglass"></i><span>损失函数曲线</span></a>
+					</li>
+
+
+					<li class="current">
+						<a href="summeryfunction.html"><i class="ico mdi mdi-email"></i><span>绘制总体性能曲线</span></a>
+					</li>
+
+			</ul>
+			<!-- /.menu -->
+		</div>
+		<!-- /.container -->
+	</nav>
+	<!-- /.nav-horizontal -->
+</header>
+<!-- /.fixed-header -->
+
+<div id="wrapper">
+	<div class="main-content container">
+		<div class="row small-spacing">
+			<div class="col-xs-12">
+
+
+				<div class="box-content card white">
+					<h4 class="box-title">请选择绘制哪次实验</h4>
+					<!-- /.box-title -->
+					<div class="card-content">
+						<div class="row small-spacing">
+							<div class="col-xs-3">
+								<div class="form-group margin-bottom-20">
+							<select class="form-control" id="repeat_name">
+								<option value="">Nothing selected</option>
+
+							</select>
+						</div>
+							</div>
+							<!-- /.col-xs-3 -->
+							<div class="col-xs-3">
+								<div class="form-group margin-bottom-20">
+							<select class="form-control" id="fold">
+								<option value="">Nothing selected</option>
+
+							</select>
+							</div>
+
+						</div>
+							<div class="col-xs-3">
+								<div class="checkbox margin-bottom-3">
+								<input type="checkbox" id="chk-1"><label for="chk-1">交叉验证训练模式</label>
+							</div>
+
+							</div>
+							<div class="col-xs-3">
+							<button type="button" class="btn btn-success waves-effect waves-light" id="btn-search">绘制</button>
+							</div>
+						<!-- /.row -->
+					</div>
+					<!-- /.card-content -->
+				</div>
+
+                <div id="bi-polar-area-chartist-chart" class="chartist-chart" style="height: 520px"></div>
+
+
+				<!-- /.box-content -->
+			</div>
+			<!-- /.col-xs-12 -->
+
+			<!-- /.col-xs-12 -->
+		</div>
+		<!-- /.row .small-spacing -->
+		<footer class="footer">
+			<ul class="list-inline">
+				<li>Copyright &copy; 2025.Changzhou Univerity zwx .</li>
+				<li><a href="#">Privacy</a></li>
+				<li><a href="#">Terms</a></li>
+				<li><a href="#">Help</a></li>
+			</ul>
+		</footer>
+	</div>
+	<!-- /.main-content -->
+</div><!--/#wrapper -->
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!--[if lt IE 9]>
+		<script src="assets/script/html5shiv.min.js"></script>
+		<script src="assets/script/respond.min.js"></script>
+	<![endif]-->
+	<!--
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="assets/scripts/jquery.min.js"></script>
+	<script src="assets/scripts/modernizr.min.js"></script>
+	<script src="assets/plugin/bootstrap/js/bootstrap.min.js"></script>
+	<script src="assets/plugin/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+	<script src="assets/plugin/nprogress/nprogress.js"></script>
+	<script src="assets/plugin/sweet-alert/sweetalert.min.js"></script>
+	<script src="assets/plugin/waves/waves.min.js"></script>
+	<script src="assets/echarts/echarts.js"></script>
+
+	<!-- Hightcharts -->
+	<script src="assets/plugin/chart/highcharts/highcharts.js"></script>
+	<script src="assets/plugin/chart/highcharts/highcharts-3d.js"></script>
+	<script src="assets/plugin/chart/highcharts/themes/grid-light.js"></script>
+	<script src="assets/scripts/chart.highcharts.init.min.js"></script>
+
+
+
+	<script src="assets/scripts/main.min.js"></script>
+	<script src="assets/scripts/horizontal-menu.min.js"></script>
+
+	    <script>
+			const jsonData = localStorage.getItem('jsonData');
+			// 根据是否勾选交叉验证训练模式进行不同的处理
+			const checkbox = document.getElementById('chk-1');
+			document.addEventListener('DOMContentLoaded', function() {
+            // 从 localStorage 中读取 JSON 数据
+
+
+            if (jsonData) {
+                try {
+                    const data = JSON.parse(jsonData);
+                    const selectElement = document.getElementById('repeat_name');
+
+                    for (const key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            const optionElement = document.createElement('option');
+                            optionElement.value = key;
+                            optionElement.textContent = key;
+                            selectElement.appendChild(optionElement);
+                        }
+                    }
+
+                    // 判断是不是交叉验证模式的数据
+                    if (data.repeat_1 && data.repeat_1.hasOwnProperty('fold_1')) {
+                        // 如果是：渲染 fold
+                        const selectElement2 = document.getElementById('fold');
+                        const data2 = data["repeat_1"];
+
+                        for (const key in data2) {
+                            if (data2.hasOwnProperty(key)) {
+                                const optionElement = document.createElement('option');
+                                optionElement.value = key;
+                                optionElement.textContent = key;
+                                selectElement2.appendChild(optionElement);
+                            }
+                        }
+                    } else {
+                        // 如果不是就不渲染
+                    }
+
+                } catch (error) {
+                    console.error('Error parsing JSON data:', error);
+                }
+            } else {
+                console.error('No data found in localStorage');
+            }
+        });
+
+
+        // 获取按钮元素
+        const btnSearch = document.getElementById('btn-search');
+		const chartDom = document.getElementById('bi-polar-area-chartist-chart');
+		const myChart = echarts.init(chartDom);
+		let option1;
+		let app = {};
+		const posList = [
+					  'left',
+					  'right',
+					  'top',
+					  'bottom',
+					  'inside',
+					  'insideTop',
+					  'insideLeft',
+					  'insideRight',
+					  'insideBottom',
+					  'insideTopLeft',
+					  'insideTopRight',
+					  'insideBottomLeft',
+					  'insideBottomRight'
+					];
+			app.configParameters = {
+					  rotate: {
+						min: -90,
+						max: 90
+					  },
+					  align: {
+						options: {
+						  left: 'left',
+						  center: 'center',
+						  right: 'right'
+						}
+					  },
+					  verticalAlign: {
+						options: {
+						  top: 'top',
+						  middle: 'middle',
+						  bottom: 'bottom'
+						}
+					  },
+					  position: {
+						options: posList.reduce(function (map, pos) {
+						  map[pos] = pos;
+						  return map;
+						}, {})
+					  },
+					  distance: {
+						min: 0,
+						max: 100
+					  }
+					};
+					app.config = {
+					  rotate: 90,
+					  align: 'left',
+					  verticalAlign: 'middle',
+					  position: 'insideBottom',
+					  distance: 15,
+					  onChange: function () {
+						const labelOption = {
+						  rotate: app.config.rotate,
+						  align: app.config.align,
+						  verticalAlign: app.config.verticalAlign,
+						  position: app.config.position,
+						  distance: app.config.distance
+						};
+						myChart.setOption({
+						  series: [
+							{
+							  label: labelOption
+							},
+							{
+							  label: labelOption
+							},
+							{
+							  label: labelOption
+							},
+							{
+							  label: labelOption
+							}
+						  ]
+						});
+					  }
+					};
+			const labelOption = {
+					  show: true,
+					  position: app.config.position,
+					  distance: app.config.distance,
+					  align: app.config.align,
+					  verticalAlign: app.config.verticalAlign,
+					  rotate: app.config.rotate,
+					  formatter: '{c}  {name|{a}}',
+					  fontSize: 16,
+					  rich: {
+						name: {}
+					  }
+					};
+
+			let current_data = {};
+
+
+
+
+        // 添加点击事件监听器
+        btnSearch.addEventListener('click', function() {
+			const data = JSON.parse(jsonData);
+            // 获取下拉框元素
+            const repeatNameSelect = document.getElementById('repeat_name');
+            const foldSelect = document.getElementById('fold');
+
+            // 获取下拉框中的值
+            const repeatNameValue = repeatNameSelect.value;
+            const foldValue = foldSelect.value;
+
+            // 打印值
+            console.log('Repeat Name:', repeatNameValue);
+            console.log('Fold:', foldValue);
+
+			//判断复选框是否被选中
+		// 如果选中表示交叉验证模式
+			if(checkbox.checked){
+				//再判断是哪种绘图情形
+
+				if(repeatNameValue){
+					if(foldValue){
+					//两个下拉框都有值的话，绘制一次实验的一折信息
+					current_data = get_repeate_foldValue(data,repeatNameValue,foldValue);
+				}
+					else{
+						//第一个下拉框有第二个没有，绘制这次实验的全部fold
+					current_data = get_repeate_allfoldValue(data,repeatNameValue);
+					}
+
+				}
+			}
+			else {
+				//如果复选框没被选中，表示不是交叉验证的数据
+				if(!foldValue){
+					if(repeatNameValue){
+						//单次实验的结果
+						current_data = get_repeat_val(data,repeatNameValue);
+
+
+					}
+
+					else{
+						current_data = get_repeat_val_all(data);
+					}
+				}
+
+
+			}
+
+								option1 = {
+					  tooltip: {
+						trigger: 'axis',
+						axisPointer: {
+						  type: 'shadow'
+						}
+					  },
+					  legend: {
+						data: ['best_val_acc', 'final_test_acc', 'recall', 'f1']
+					  },
+					  toolbox: {
+						show: true,
+						orient: 'vertical',
+						left: 'right',
+						top: 'center',
+						feature: {
+						  mark: { show: true },
+						  dataView: { show: true, readOnly: false },
+						  magicType: { show: true, type: ['line', 'bar', 'stack'] },
+						  restore: { show: true },
+						  saveAsImage: { show: true }
+						}
+					  },
+					  xAxis: [
+						{
+						  type: 'category',
+						  axisTick: { show: false },
+						  data: current_data.index //这里是横坐标
+						}
+					  ],
+					  yAxis: [
+						{
+						  type: 'value'
+						}
+					  ],
+					  series: [
+						{
+						  name: 'best_val_acc',
+						  type: 'bar',
+						  barGap: 0,
+						  label: labelOption,
+						  emphasis: {
+							focus: 'series'
+						  },
+						  data: current_data.best_val_acc
+						},
+						{
+						  name: 'final_test_acc',
+						  type: 'bar',
+						  label: labelOption,
+						  emphasis: {
+							focus: 'series'
+						  },
+						  data: current_data.final_test_acc
+						},
+						{
+						  name: 'recall',
+						  type: 'bar',
+						  label: labelOption,
+						  emphasis: {
+							focus: 'series'
+						  },
+						  data: current_data.recall
+						},
+						{
+						  name: 'f1',
+						  type: 'bar',
+						  label: labelOption,
+						  emphasis: {
+							focus: 'series'
+						  },
+						  data: current_data.f1
+						}
+					  ]
+					};
+
+					option1 && myChart.setOption(option1);
+
+
+        });
+
+
+		function get_repeate_foldValue(data, repeat_num, fold_num) {
+			//两个都选并且交叉验证
+			// 获取交叉验证的数据
+			const epochdata = data[repeat_num][fold_num]["summary"];
+			console.log(epochdata);
+
+			// 初始化数组
+			let best_val_acc = [];
+			let final_test_acc = [];
+			let recall = [];
+			let f1 = [];
+
+			if (epochdata) {
+
+					if (epochdata.hasOwnProperty('best_val_acc')) {
+						best_val_acc.push(epochdata.best_val_acc);
+					}
+					if (epochdata.hasOwnProperty('final_test_acc')) {
+						final_test_acc.push(epochdata.final_test_acc);
+					}
+					if (epochdata.hasOwnProperty('recall')) {
+						recall.push(epochdata.recall);
+					}
+					if (epochdata.hasOwnProperty('f1')) {
+						f1.push(epochdata.f1);
+					}
+
+			}
+			const index = Array.from({ length: best_val_acc.length }, (_, index) => index + 1);
+			// 返回包含两个数组的对象
+			return {
+				best_val_acc: best_val_acc,
+				final_test_acc: final_test_acc,
+				index :index,
+				recall:recall,
+				f1: f1
+			};
+}
+
+		function get_repeate_allfoldValue(data, repeat_num) {
+			//两个都选并且交叉验证
+			// 获取交叉验证的数据
+			const epochdata = data[repeat_num];
+			console.log(epochdata);
+
+			// 初始化数组
+			let best_val_acc = [];
+			let final_test_acc = [];
+			let recall = [];
+			let f1 = [];
+
+			if(epochdata){
+				for(let key in epochdata){
+					if(key.includes("fold")){
+
+						best_val_acc.push(epochdata[key].summary['best_val_acc']);
+						final_test_acc.push(epochdata[key].summary['final_test_acc']);
+
+						recall.push(epochdata[key].summary['recall']);
+						f1.push(epochdata[key].summary['f1']);
+						console.log("zheshi",epochdata[key].summary['best_val_acc']);
+
+
+					}
+				}
+			}
+
+
+
+
+
+			const index = Array.from({ length: best_val_acc.length }, (_, index) => index + 1);
+			// 返回包含两个数组的对象
+			return {
+				best_val_acc: best_val_acc,
+				final_test_acc: final_test_acc,
+				index :index,
+				recall:recall,
+				f1: f1
+			};
+}
+
+		function get_repeat_val(data,repeat_num)
+		{
+			const epoch_data = data[repeat_num]["summary"];
+			//打印调试
+			console.log(epoch_data);
+			// 初始化数组
+
+			let best_val_acc = [];
+			let final_test_acc = [];
+			let recall = [];
+			let f1 = [];
+
+			if (epoch_data) {
+
+					if (epoch_data.hasOwnProperty('best_val_acc')) {
+						best_val_acc.push(epoch_data.best_val_acc);
+					}
+					if (epoch_data.hasOwnProperty('final_test_acc')) {
+						final_test_acc.push(epoch_data.final_test_acc);
+					}
+					if (epoch_data.hasOwnProperty('recall')) {
+						recall.push(epoch_data.recall);
+					}
+					if (epoch_data.hasOwnProperty('f1')) {
+						f1.push(epoch_data.f1);
+					}
+
+			}
+			const index = Array.from({ length: best_val_acc.length }, (_, index) => index + 1);
+			// 返回包含两个数组的对象
+			return {
+				best_val_acc: best_val_acc,
+				final_test_acc: final_test_acc,
+				index :index,
+				recall:recall,
+				f1: f1
+			};
+
+
+		}
+
+		function get_repeat_val_all(data){
+			//非交叉验证的全部综合信息
+
+			let best_val_acc = [];
+			let final_test_acc = [];
+			let recall = [];
+			let f1 = [];
+
+			for(let key in data){
+					if(key.includes("repeat")){
+
+						best_val_acc.push(data[key].summary['best_val_acc']);
+						final_test_acc.push(data[key].summary['final_test_acc']);
+
+						recall.push(data[key].summary['recall']);
+						f1.push(data[key].summary['f1']);
+						console.log("zheshi",data[key].summary['best_val_acc']);
+
+
+					}
+				}
+			const index = Array.from({ length: best_val_acc.length }, (_, index) => index + 1);
+			// 返回包含两个数组的对象
+			return {
+				best_val_acc: best_val_acc,
+				final_test_acc: final_test_acc,
+				index :index,
+				recall:recall,
+				f1: f1
+			};
+
+		}
+
+
+    </script>
+</body>
+</html>
