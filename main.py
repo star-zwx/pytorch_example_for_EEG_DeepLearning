@@ -48,8 +48,8 @@ def result_drawer(json_file):
 
 
 if __name__ == '__main__':
-    # model_trainer(para_config_dir)  #由于需要在模型训练完才能保存训练数据，所以训练和画图的代码不能同时执行
-    # model_trainer_cross_validation(para_config_dir)
+    # model_trainer(para_config_dir)  # 由于需要在模型训练完才能保存训练数据，所以训练和画图的代码不能同时执行
+    model_trainer_cross_validation(para_config_dir)
     # result_drawer(r"logs/EEGNet-20250418_123734/logs.json")
 
     pass

@@ -498,6 +498,11 @@
 				const maxFinalValAcc = Math.max(...finalValAccValues);
 				const maxFinalF1 = Math.max(...finalF1Values);
 				const maxRecall = Math.max(...finalRecallValues);
+				// 保留两位小数
+				const formattedMaxFinalTestAcc = parseFloat(maxFinalTestAcc.toFixed(2));
+				const formattedMaxFinalValAcc = parseFloat(maxFinalValAcc.toFixed(2));
+				const formattedMaxFinalF1 = parseFloat(maxFinalF1.toFixed(2));
+				const formattedMaxRecall = parseFloat(maxRecall.toFixed(2));
 
         		// 获取要更新的HTML元素
         		const repeatNumElement = document.getElementById('repeat_num');
@@ -514,11 +519,11 @@
         		// 更新HTML内容
         		repeatNumElement.textContent = repeatCount;
 				epoch_num_element.textContent = epochnum;
-				bestacc.textContent = maxFinalTestAcc;
-				bestvalacc.textContent = maxFinalValAcc;
-				bestf1.textContent = maxFinalF1;
-				bestrecall.textContent = maxRecall;
-				bestacc1.textContent = maxFinalTestAcc;
+				bestacc.textContent = formattedMaxFinalTestAcc;
+				bestvalacc.textContent = formattedMaxFinalValAcc;
+				bestf1.textContent = formattedMaxFinalF1;
+				bestrecall.textContent = formattedMaxRecall;
+				bestacc1.textContent = formattedMaxFinalTestAcc;
 
 			} else {
 				swal("警告", "上传的 JSON 数据缺少交叉验证的相关字段。", "warning");
@@ -566,6 +571,12 @@
 				const maxFinalF1 = Math.max(...finalF1Values);
 				const maxRecall = Math.max(...finalRecallValues);
 
+        		// 保留两位小数
+				const formattedMaxFinalTestAcc = parseFloat(maxFinalTestAcc.toFixed(2));
+				const formattedMaxFinalValAcc = parseFloat(maxFinalValAcc.toFixed(2));
+				const formattedMaxFinalF1 = parseFloat(maxFinalF1.toFixed(2));
+				const formattedMaxRecall = parseFloat(maxRecall.toFixed(2));
+
         		// 获取要更新的HTML元素
         		const repeatNumElement = document.getElementById('repeat_num');
 				const epoch_num_element = document.getElementById('epoch_num');
@@ -581,11 +592,11 @@
         		// 更新HTML内容
         		repeatNumElement.textContent = repeatCount;
 				epoch_num_element.textContent = epochnum;
-				bestacc.textContent = maxFinalTestAcc;
-				bestvalacc.textContent = maxFinalValAcc;
-				bestf1.textContent = maxFinalF1;
-				bestrecall.textContent = maxRecall;
-				bestacc1.textContent = maxFinalTestAcc;
+				bestacc.textContent = formattedMaxFinalTestAcc;
+				bestvalacc.textContent = formattedMaxFinalValAcc;
+				bestf1.textContent = formattedMaxFinalF1;
+				bestrecall.textContent = formattedMaxRecall;
+				bestacc1.textContent = formattedMaxFinalTestAcc;
 
 			} else {
 				swal("警告", "上传的 JSON 数据缺少交叉验证的相关字段。", "warning");

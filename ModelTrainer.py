@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from utils import *
-from models import EEGNet, model_name2
+from models import EEGNet, MCNN, EEGInception, TransNet
 from tqdm import tqdm
 
 from sklearn.metrics import accuracy_score, recall_score, f1_score
@@ -33,6 +33,8 @@ class ModelTrainer():
         self.data_logs_path = self.para_config_dir["save_logs_path"]  # 训练过程中的数据保存位置
         self.save_model_path = self.para_config_dir["save_model_path"]  # 模型保存地址
         self.Cross_validation = self.para_config_dir["Cross_validation"]  # 是否选择交叉验证的策略的配置
+        self.EEGDataInfo = self.para_config_dir["EEGDataInfo"] # 获取脑电数据的信息
+
         # 声明数据加载器，训练集，测试集，验证集
         self.dataLoader_train = None
         self.dataLoader_test = None
@@ -47,8 +49,11 @@ class ModelTrainer():
         # 这里需要修改为实际的模型名称,注意路径关系
         self.model_dict = {
             "EEGNet": EEGNet.EEGNet,
-            "EEGNet2": EEGNet.EEGNet
-        }
+            "EEGNet2": EEGNet.EEGNet,
+            "MCNN": MCNN.MCNN,
+            "EEGInception": EEGInception.Inception_EEG,
+            "TransNet": TransNet.TransNet,
+        }  #在这里添加需要在上面导入模块那导入对应的python模块
 
     def data_loader(self):
         if self.Subject_sigal["sigal"] == "yes":
@@ -68,7 +73,10 @@ class ModelTrainer():
         save_path = os.path.join(self.data_logs_path, f"{self.model_name}-{current_time}")
 
         all_results = {}
-
+        # 输出一些基本的信息
+        print("模型名称：", self.model_name)
+        print("数据集名称：", self.data_name)
+        print("训练设备：", self.device)
         for repeat in range(1, num_repeats + 1):
             print(f"\n=======================Training Round  {repeat}  /  {self.repeat_time} =====================")
             self.model = self.initialize_model()
@@ -307,9 +315,8 @@ class ModelTrainCrossValidation(ModelTrainer):
         save_json_path = os.path.join(save_path, "logs.json")
         save_json(all_results, save_json_path)
 
-
-    def model_save(self, model_state_dict, save_path, repeat_index, current_time,fold):
-            filename = f"best_model_repeat{repeat_index}-{fold}-{current_time}.pth"
-            full_path = os.path.join(save_path, filename)
-            torch.save(model_state_dict, full_path)
-            print(f"💾 Best model for Repeat {repeat_index} saved to: {full_path}")
+    def model_save(self, model_state_dict, save_path, repeat_index, current_time, fold):
+        filename = f"best_model_repeat{repeat_index}-{fold}-{current_time}.pth"
+        full_path = os.path.join(save_path, filename)
+        torch.save(model_state_dict, full_path)
+        print(f"💾 Best model for Repeat {repeat_index} saved to: {full_path}")

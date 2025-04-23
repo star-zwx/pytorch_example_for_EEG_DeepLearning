@@ -50,7 +50,7 @@ class EEGDataset(Dataset):
                     # 遍历目录下的所有条目
                     for root, dirs, files in os.walk(session):
                         for file in files:
-                            if file.endswith('.npy'):
+                            if file.endswith('.npz'):
                                 # 构建完整路径并添加到 datalist
                                 full_path = os.path.join(root, file)
                                 self.data_list.append(full_path)
@@ -62,10 +62,10 @@ class EEGDataset(Dataset):
 
     def __getitem__(self, index):
 
-        EEG_npy_data = np.load(self.data_list[index], allow_pickle=True).item()  # 加载一个文件的npy
+        EEG_npy_data = np.load(self.data_list[index], allow_pickle=True)  # 加载一个文件的npz
 
-        EEG_data = EEG_npy_data["data"]  # 获取EEG数据
-        EEG_label = EEG_npy_data["label"]  # 获取数据对应的标签
+        EEG_data = EEG_npy_data["data"].T  # 获取EEG数据
+        EEG_label = EEG_npy_data["label"] - 1  # 获取数据对应的标签，我的数据标签是从1开始的，所以要减一从零开始
         # 将数据和标签转换为torch.Tensor
         EEG_data = torch.tensor(EEG_data, dtype=torch.float32)
         EEG_label = torch.tensor(EEG_label, dtype=torch.long)
@@ -96,6 +96,7 @@ class EEGDatasetCrossValidation(EEGDataset):
 
         current_file = self.txt_files_list[self.current_fold]
         self.this_data_list = self._load_data_paths(current_file)
+
     def __getitem__(self, index):
         assert len(self.txt_files_list) == self.num_folds
 
@@ -103,7 +104,7 @@ class EEGDatasetCrossValidation(EEGDataset):
         EEG_npy_data = np.load(one_data_path, allow_pickle=True).item()  # 加载一个文件的npy
 
         EEG_data = EEG_npy_data["data"]  # 获取EEG数据
-        EEG_label = EEG_npy_data["label"]  # 获取数据对应的标签
+        EEG_label = EEG_npy_data["label"] - 1  # 获取数据对应的标签
         # 将数据和标签转换为torch.Tensor
         EEG_data = torch.tensor(EEG_data, dtype=torch.float32)
         EEG_label = torch.tensor(EEG_label, dtype=torch.long)

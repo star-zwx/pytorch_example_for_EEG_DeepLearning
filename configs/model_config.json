@@ -1,11 +1,11 @@
 {
-  "model_name": "EEGNet",
-  "data_name" : "dataname1",
+  "model_name": "TransNet",
+  "data_name" : "BCI_2a",
   "data_root_path" : ".\\dataset\\",
   "save_logs_path": "./logs/",
   "save_model_path": "./checkpoint/",
   "learning_rate": 0.001,
-  "batch_size": 2,
+  "batch_size": 16,
   "epochs": 50,
   "repeat_time": 10,
   "optimizer": "Adam",
@@ -33,6 +33,10 @@
   "Cross_validation": {
     "selection": "yes",
     "Fload_Num": 5
+  },
+  "EEGDataInfo": {
+    "channel_num" :22,
+    "sample_point " : 640
   }
 
 
