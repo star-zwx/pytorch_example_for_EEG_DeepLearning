@@ -68,4 +68,8 @@ def view_press_bci2a():
 if __name__ == '__main__':
     # press_bci2a()
     # view_press_bci2a()
-    remove_npy()
+    # remove_npy()
+
+
+    data = np.load(r'C:\Users\Administrator\Desktop\pytorch_example\dataset\dataname1\S1\session1\c1_r14.npz' , allow_pickle=True)
+    print(data['data'].shape)

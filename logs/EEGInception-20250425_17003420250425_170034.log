@@ -1,0 +1,43 @@
+模型名称：EEGInception
+数据集名称：BCI_2a
+训练设备：cuda
+模式：5折交叉验证
+
+=======================Training Round  1  /  1 =====================
+
+----------------------- Fold 1 / 5 -----------------------
+ Repeat 1/1 |  Epoch [1/5]  Train Loss: 1.4717 |  Train Acc: 0.2609 |  Val Loss: 1.4166 |  Val Acc: 0.3017
+ Repeat 1/1 |  Epoch [2/5]  Train Loss: 1.3525 |  Train Acc: 0.3761 |  Val Loss: 1.3591 |  Val Acc: 0.3276
+ Repeat 1/1 |  Epoch [3/5]  Train Loss: 1.3211 |  Train Acc: 0.3457 |  Val Loss: 1.2678 |  Val Acc: 0.3362
+ Repeat 1/1 |  Epoch [4/5]  Train Loss: 1.2508 |  Train Acc: 0.4196 |  Val Loss: 1.3066 |  Val Acc: 0.3448
+ Repeat 1/1 |  Epoch [5/5]  Train Loss: 1.2149 |  Train Acc: 0.4500 |  Val Loss: 1.2003 |  Val Acc: 0.4397
+
+----------------------- Fold 2 / 5 -----------------------
+ Repeat 1/1 |  Epoch [1/5]  Train Loss: 1.4238 |  Train Acc: 0.2972 |  Val Loss: 1.3582 |  Val Acc: 0.2870
+ Repeat 1/1 |  Epoch [2/5]  Train Loss: 1.2951 |  Train Acc: 0.3948 |  Val Loss: 1.3078 |  Val Acc: 0.3043
+ Repeat 1/1 |  Epoch [3/5]  Train Loss: 1.2507 |  Train Acc: 0.4555 |  Val Loss: 1.3017 |  Val Acc: 0.3826
+ Repeat 1/1 |  Epoch [4/5]  Train Loss: 1.2255 |  Train Acc: 0.4425 |  Val Loss: 1.2107 |  Val Acc: 0.4348
+ Repeat 1/1 |  Epoch [5/5]  Train Loss: 1.1435 |  Train Acc: 0.5033 |  Val Loss: 1.2668 |  Val Acc: 0.4435
+
+----------------------- Fold 3 / 5 -----------------------
+ Repeat 1/1 |  Epoch [1/5]  Train Loss: 1.4436 |  Train Acc: 0.3124 |  Val Loss: 1.3807 |  Val Acc: 0.2783
+ Repeat 1/1 |  Epoch [2/5]  Train Loss: 1.3199 |  Train Acc: 0.3991 |  Val Loss: 1.3129 |  Val Acc: 0.3304
+ Repeat 1/1 |  Epoch [3/5]  Train Loss: 1.2511 |  Train Acc: 0.4013 |  Val Loss: 1.2695 |  Val Acc: 0.3913
+ Repeat 1/1 |  Epoch [4/5]  Train Loss: 1.1323 |  Train Acc: 0.5163 |  Val Loss: 1.2576 |  Val Acc: 0.4261
+ Repeat 1/1 |  Epoch [5/5]  Train Loss: 1.1164 |  Train Acc: 0.5033 |  Val Loss: 1.2363 |  Val Acc: 0.4174
+
+----------------------- Fold 4 / 5 -----------------------
+ Repeat 1/1 |  Epoch [1/5]  Train Loss: 1.4561 |  Train Acc: 0.2733 |  Val Loss: 1.3725 |  Val Acc: 0.3043
+ Repeat 1/1 |  Epoch [2/5]  Train Loss: 1.3541 |  Train Acc: 0.3536 |  Val Loss: 1.3318 |  Val Acc: 0.3652
+ Repeat 1/1 |  Epoch [3/5]  Train Loss: 1.3276 |  Train Acc: 0.3492 |  Val Loss: 1.2380 |  Val Acc: 0.4435
+ Repeat 1/1 |  Epoch [4/5]  Train Loss: 1.2716 |  Train Acc: 0.4143 |  Val Loss: 1.2738 |  Val Acc: 0.4174
+ Repeat 1/1 |  Epoch [5/5]  Train Loss: 1.1592 |  Train Acc: 0.4794 |  Val Loss: 1.1825 |  Val Acc: 0.4609
+
+----------------------- Fold 5 / 5 -----------------------
+ Repeat 1/1 |  Epoch [1/5]  Train Loss: 1.4632 |  Train Acc: 0.2625 |  Val Loss: 1.3629 |  Val Acc: 0.2609
+ Repeat 1/1 |  Epoch [2/5]  Train Loss: 1.3647 |  Train Acc: 0.3362 |  Val Loss: 1.3408 |  Val Acc: 0.3478
+ Repeat 1/1 |  Epoch [3/5]  Train Loss: 1.3018 |  Train Acc: 0.3883 |  Val Loss: 1.2720 |  Val Acc: 0.3391
+ Repeat 1/1 |  Epoch [4/5]  Train Loss: 1.2639 |  Train Acc: 0.4360 |  Val Loss: 1.3049 |  Val Acc: 0.4000
+ Repeat 1/1 |  Epoch [5/5]  Train Loss: 1.1877 |  Train Acc: 0.4534 |  Val Loss: 1.2586 |  Val Acc: 0.3652
+program time: 0:01:04.963891
+Fineshed!

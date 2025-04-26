@@ -138,6 +138,7 @@
 				</div>
 
                 <div id="bi-polar-area-chartist-chart" class="chartist-chart" style="height: 520px"></div>
+					<div id="confusion_matrix" class="chartist-chart" style="height: 520px"></div>
 
 
 				<!-- /.box-content -->
@@ -238,8 +239,10 @@
         // 获取按钮元素
         const btnSearch = document.getElementById('btn-search');
 		const chartDom = document.getElementById('bi-polar-area-chartist-chart');
+		const chartDom2 = document.getElementById('confusion_matrix');
 		const myChart = echarts.init(chartDom);
-		let option1;
+		const myChart2 = echarts.init(chartDom2);
+		let option1,option2;
 		let app = {};
 		const posList = [
 					  'left',
@@ -387,7 +390,7 @@
 
 			}
 
-								option1 = {
+			option1 = {
 					  tooltip: {
 						trigger: 'axis',
 						axisPointer: {
@@ -463,7 +466,69 @@
 					  ]
 					};
 
+			 const matrixData = current_data.confusion_matrix;
+			 console.log("混淆矩阵",matrixData)
+			 const labels = matrixData[0].map((_, index) => `Class ${index}`);
+			 console.log("标签：",labels)
+
+
+			  // 转换为热力图需要的数据格式
+				const heatmapData = matrixData[0].flatMap((row, y) =>
+				  row.map((value, x) => [x, y, value])
+				);
+
+			 console.log("矩阵：",heatmapData);
+
+			option2 = {
+					  tooltip: {
+						position: 'top'
+					  },
+					  grid: {
+						height: '50%',
+						top: '10%'
+					  },
+					  xAxis: {
+						type: 'category',
+						data: labels,
+						splitArea: {
+						  show: true
+						}
+					  },
+					  yAxis: {
+						type: 'category',
+						data: labels,
+						splitArea: {
+						  show: true
+						}
+					  },
+					  visualMap: {
+						min: 0,
+						max: 10,
+						calculable: true,
+						orient: 'horizontal',
+						left: 'center',
+						bottom: '15%'
+					  },
+					  series: [
+						{
+						  name: 'Punch Card',
+						  type: 'heatmap',
+						  data: heatmapData,
+						  label: {
+							show: true
+						  },
+						  emphasis: {
+							itemStyle: {
+							  shadowBlur: 10,
+							  shadowColor: 'rgba(0, 0, 0, 0.5)'
+							}
+						  }
+						}
+					  ]
+					};
+
 					option1 && myChart.setOption(option1);
+					option2 && myChart2.setOption(option2);
 
 
         });
@@ -480,6 +545,7 @@
 			let final_test_acc = [];
 			let recall = [];
 			let f1 = [];
+			let confusion_matrix = [];
 
 			if (epochdata) {
 
@@ -495,6 +561,9 @@
 					if (epochdata.hasOwnProperty('f1')) {
 						f1.push(epochdata.f1);
 					}
+					if (epochdata.hasOwnProperty('confusion_matrix')) {
+						confusion_matrix.push(epochdata.confusion_matrix);
+					}
 
 			}
 			const index = Array.from({ length: best_val_acc.length }, (_, index) => index + 1);
@@ -504,7 +573,8 @@
 				final_test_acc: final_test_acc,
 				index :index,
 				recall:recall,
-				f1: f1
+				f1: f1,
+				confusion_matrix : confusion_matrix
 			};
 }
 
@@ -519,6 +589,7 @@
 			let final_test_acc = [];
 			let recall = [];
 			let f1 = [];
+			let allconfusion_matrix = [];
 
 			if(epochdata){
 				for(let key in epochdata){
@@ -529,6 +600,7 @@
 
 						recall.push(epochdata[key].summary['recall']);
 						f1.push(epochdata[key].summary['f1']);
+						allconfusion_matrix.push(epochdata[key].summary['allconfusion_matrix']);
 						console.log("zheshi",epochdata[key].summary['best_val_acc']);
 
 
@@ -541,13 +613,16 @@
 
 
 			const index = Array.from({ length: best_val_acc.length }, (_, index) => index + 1);
+			//这里需要把混淆矩阵做平均
+			const confusion_matrix = averageConfusionMatrix(allconfusion_matrix)
 			// 返回包含两个数组的对象
 			return {
 				best_val_acc: best_val_acc,
 				final_test_acc: final_test_acc,
 				index :index,
 				recall:recall,
-				f1: f1
+				f1: f1,
+				confusion_matrix:confusion_matrix
 			};
 }
 
@@ -562,6 +637,7 @@
 			let final_test_acc = [];
 			let recall = [];
 			let f1 = [];
+			let confusion_matrix = [];
 
 			if (epoch_data) {
 
@@ -578,6 +654,10 @@
 						f1.push(epoch_data.f1);
 					}
 
+					if (epoch_data.hasOwnProperty('confusion_matrix')) {
+						confusion_matrix.push(epoch_data.confusion_matrix);
+					}
+
 			}
 			const index = Array.from({ length: best_val_acc.length }, (_, index) => index + 1);
 			// 返回包含两个数组的对象
@@ -586,7 +666,8 @@
 				final_test_acc: final_test_acc,
 				index :index,
 				recall:recall,
-				f1: f1
+				f1: f1,
+				confusion_matrix :confusion_matrix
 			};
 
 
@@ -599,6 +680,7 @@
 			let final_test_acc = [];
 			let recall = [];
 			let f1 = [];
+			let confusion_matrix = [];
 
 			for(let key in data){
 					if(key.includes("repeat")){
@@ -608,22 +690,57 @@
 
 						recall.push(data[key].summary['recall']);
 						f1.push(data[key].summary['f1']);
+						confusion_matrix.push(data[key].summary['confusion_matrix']);
 						console.log("zheshi",data[key].summary['best_val_acc']);
 
 
 					}
 				}
 			const index = Array.from({ length: best_val_acc.length }, (_, index) => index + 1);
+
+			const confusion = averageConfusionMatrix(confusion_matrix)
+
 			// 返回包含两个数组的对象
 			return {
 				best_val_acc: best_val_acc,
 				final_test_acc: final_test_acc,
 				index :index,
 				recall:recall,
-				f1: f1
+				f1: f1,
+				confusion_matrix:confusion
 			};
 
 		}
+			function averageConfusionMatrix(matrices) {
+			  const numMatrices = matrices.length;
+			  const rows = matrices[0].length;
+			  const cols = matrices[0][0].length;
+
+			  // 初始化平均矩阵为全 0
+			  const avgMatrix = Array.from({ length: rows }, () =>
+				Array.from({ length: cols }, () => 0)
+			  );
+
+			  // 累加每个矩阵
+			  for (const matrix of matrices) {
+				for (let i = 0; i < rows; i++) {
+				  for (let j = 0; j < cols; j++) {
+					avgMatrix[i][j] += matrix[i][j];
+				  }
+				}
+			  }
+
+			  // 除以矩阵个数求平均
+			  for (let i = 0; i < rows; i++) {
+				for (let j = 0; j < cols; j++) {
+				  avgMatrix[i][j] = avgMatrix[i][j] / numMatrices;
+				  avgMatrix[i][j] = parseFloat((avgMatrix[i][j]).toFixed(2));
+
+				}
+			  }
+
+			  return avgMatrix;
+			}
 
 
     </script>

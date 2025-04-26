@@ -6,8 +6,9 @@ from torch.utils.data import DataLoader
 from utils import *
 from models import EEGNet, MCNN, EEGInception, TransNet
 from tqdm import tqdm
-
-from sklearn.metrics import accuracy_score, recall_score, f1_score
+import logging
+from sklearn.metrics import accuracy_score, recall_score, f1_score, confusion_matrix
+import datetime
 
 
 class ModelTrainer():
@@ -21,7 +22,7 @@ class ModelTrainer():
         self.batch_size = self.para_config_dir["batch_size"]  # 获取batch_size
         self.epochs = self.para_config_dir["epochs"]  # 获取epochs
         self.repeat_time = self.para_config_dir["repeat_time"]
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # 设置训练设备
+        self.devices = torch.device("cuda" if torch.cuda.is_available() else "cpu")  # 设置训练设备
         self.optimizer_name = self.para_config_dir["optimizer"]  # 获取优化器名称
         self.loss_name = self.para_config_dir["loss_function"]  # 获取损失函数名称
         self.activation_func_name = self.para_config_dir["activation_function"]  # 获取激活函数名称
@@ -33,7 +34,7 @@ class ModelTrainer():
         self.data_logs_path = self.para_config_dir["save_logs_path"]  # 训练过程中的数据保存位置
         self.save_model_path = self.para_config_dir["save_model_path"]  # 模型保存地址
         self.Cross_validation = self.para_config_dir["Cross_validation"]  # 是否选择交叉验证的策略的配置
-        self.EEGDataInfo = self.para_config_dir["EEGDataInfo"] # 获取脑电数据的信息
+        self.EEGDataInfo = self.para_config_dir["EEGDataInfo"]  # 获取脑电数据的信息
 
         # 声明数据加载器，训练集，测试集，验证集
         self.dataLoader_train = None
@@ -68,17 +69,34 @@ class ModelTrainer():
 
     def model_train(self):
         num_repeats = self.repeat_time
+        start_time = datetime.datetime.now()
+
         # 获取当前时间，并格式化为字符串
-        current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+        current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         save_path = os.path.join(self.data_logs_path, f"{self.model_name}-{current_time}")
+        # 记录训练过程
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.DEBUG)
+        console_handler = logging.StreamHandler()
+        file_handler = logging.FileHandler(filename=save_path + current_time + '.log', encoding='UTF-8', mode='w')
+        logger.addHandler(console_handler)
+        logger.addHandler(file_handler)
+        formatter = logging.Formatter('%(message)s')
+        console_handler.setFormatter(formatter)
+        file_handler.setFormatter(formatter)
 
         all_results = {}
         # 输出一些基本的信息
-        print("模型名称：", self.model_name)
-        print("数据集名称：", self.data_name)
-        print("训练设备：", self.device)
+        # print("模型名称：", self.model_name)
+        # print("数据集名称：", self.data_name)
+        # print("训练设备：", self.device)
+        # 修改为通过日志输出，同时还能保存
+        logger.info("模型名称：" + self.model_name)
+        logger.info("数据集名称：" + self.data_name)
+        logger.info("训练设备：" + str(self.devices))
         for repeat in range(1, num_repeats + 1):
-            print(f"\n=======================Training Round  {repeat}  /  {self.repeat_time} =====================")
+            logger.info(
+                f"\n=======================Training Round  {repeat}  /  {self.repeat_time} =====================")
             self.model = self.initialize_model()
             criterion = self.initialize_loss()
             optimizer = self.initialize_optimizer(self.model)
@@ -93,7 +111,7 @@ class ModelTrainer():
                 train_loss, correct, total = 0, 0, 0
 
                 for data, labels in self.dataLoader_train:
-                    data, labels = data.to(self.device), labels.to(self.device)
+                    data, labels = data.to(self.devices), labels.to(self.devices)
                     optimizer.zero_grad()
                     outputs = self.model(data)
                     loss = criterion(outputs, labels)
@@ -121,10 +139,10 @@ class ModelTrainer():
                     "val_acc": val_acc
                 })
 
-                print(
-                    f"✅ Repeat {repeat}/{num_repeats} | 📈 Epoch [{epoch}/{self.epochs}] "
-                    f"🔧 Train Loss: {avg_train_loss:.4f} | 🎯 Train Acc: {train_acc:.4f} | "
-                    f"📊 Val Loss: {val_loss:.4f} | 💡 Val Acc: {val_acc:.4f}"
+                logger.info(
+                    f" Repeat {repeat}/{num_repeats} |  Epoch [{epoch}/{self.epochs}] "
+                    f" Train Loss: {avg_train_loss:.4f} |  Train Acc: {train_acc:.4f} | "
+                    f" Val Loss: {val_loss:.4f} |  Val Acc: {val_acc:.4f}"
                 )
 
                 # 加载最佳模型评估测试集
@@ -133,12 +151,19 @@ class ModelTrainer():
             y_true, y_pred = self.model_test(self.model, self.dataLoader_test)
             recall = recall_score(y_true, y_pred, average="macro")
             f1 = f1_score(y_true, y_pred, average="macro")
+            # 计算混淆矩阵
+            cm = confusion_matrix(y_true, y_pred)
+            logger.info(
+                ">>best_val_acc:[{:.3f}]  |  final_test_acc:[{:.3f}]  |  recall:[{:.3f}]  |  f1:[{:.3f}]".format(
+                    best_val_acc, test_acc, recall, f1
+                ))
 
             all_results[repeat_key]["summary"] = {
                 "best_val_acc": best_val_acc,
                 "final_test_acc": test_acc,
                 "recall": recall,
-                "f1": f1
+                "f1": f1,
+                "confusion_matrix": cm.tolist()  # 将混淆矩阵转换为列表
             }
 
             # 保存最优模型
@@ -147,13 +172,16 @@ class ModelTrainer():
         # 保存整个 JSON 文件
         save_json_path = os.path.join(save_path, "logs.json")
         save_json(all_results, save_json_path)
+        end_time = datetime.datetime.now()
+        logger.info(f'program time: {end_time - start_time}')
+        logger.info('Fineshed!')
 
     def model_test(self, model, dataloader):
         model.eval()
         y_true, y_pred = [], []
         with torch.no_grad():
             for data, labels in dataloader:
-                data = data.to(self.device)
+                data = data.to(self.devices)
                 outputs = model(data)
                 _, predicted = torch.max(outputs.data, 1)
                 y_pred.extend(predicted.cpu().numpy())
@@ -167,7 +195,7 @@ class ModelTrainer():
 
         with torch.no_grad():
             for data, labels in dataloader:
-                data, labels = data.to(self.device), labels.to(self.device)
+                data, labels = data.to(self.devices), labels.to(self.devices)
                 outputs = self.model(data)
                 loss = criterion(outputs, labels)
                 total_loss += loss.item()
@@ -181,7 +209,7 @@ class ModelTrainer():
 
     def initialize_model(self):
         # 字典索引模型（说实话有点啰嗦了，但是很strong）
-        model = self.model_dict[self.model_name]().to(self.device)
+        model = self.model_dict[self.model_name]().to(self.devices)
         return model
 
     def initialize_loss(self):
@@ -219,21 +247,35 @@ class ModelTrainCrossValidation(ModelTrainer):
 
     def model_train(self):
         num_repeats = self.repeat_time
+        start_time = datetime.datetime.now()
         k_folds = self.Cross_validation["Fload_Num"]  # 设置k折交叉验证的折数
         kfold = KFold(n_splits=k_folds, shuffle=True)
 
         # 获取当前时间，并格式化为字符串
-        current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
+        current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         save_path = os.path.join(self.data_logs_path, f"{self.model_name}-{current_time}")
-
+        # 记录训练过程
+        logger = logging.getLogger(__name__)
+        logger.setLevel(logging.DEBUG)
+        console_handler = logging.StreamHandler()
+        file_handler = logging.FileHandler(filename=save_path + current_time + '.log', encoding='UTF-8', mode='w')
+        logger.addHandler(console_handler)
+        logger.addHandler(file_handler)
+        formatter = logging.Formatter('%(message)s')
+        console_handler.setFormatter(formatter)
+        file_handler.setFormatter(formatter)
         all_results = {}
+        logger.info("模型名称：" + self.model_name)
+        logger.info("数据集名称：" + self.data_name)
+        logger.info("训练设备：" + str(self.devices))
+        logger.info("模式：{}折交叉验证".format(str(self.Cross_validation["Fload_Num"])))
 
         for repeat in range(1, num_repeats + 1):
-            print(f"\n=======================Training Round  {repeat}  /  {self.repeat_time} =====================")
+            logger.info(f"\n=======================Training Round  {repeat}  /  {self.repeat_time} =====================")
 
             fold_results = {}
             for fold, (train_ids, test_ids) in enumerate(kfold.split(self.dataset)):
-                print(f"\n----------------------- Fold {fold + 1} / {k_folds} -----------------------")
+                logger.info(f"\n----------------------- Fold {fold + 1} / {k_folds} -----------------------")
 
                 # 创建数据加载器
                 train_subsampler = torch.utils.data.SubsetRandomSampler(train_ids)
@@ -258,7 +300,7 @@ class ModelTrainCrossValidation(ModelTrainer):
                     train_loss, correct, total = 0, 0, 0
 
                     for data, labels in train_loader:
-                        data, labels = data.to(self.device), labels.to(self.device)
+                        data, labels = data.to(self.devices), labels.to(self.devices)
                         optimizer.zero_grad()
                         outputs = self.model(data)
                         loss = criterion(outputs, labels)
@@ -286,10 +328,10 @@ class ModelTrainCrossValidation(ModelTrainer):
                         "val_acc": val_acc
                     })
 
-                    print(
-                        f"✅ Repeat {repeat}/{num_repeats} | Fold {fold + 1}/{k_folds} | 📈 Epoch [{epoch}/{self.epochs}] "
-                        f"🔧 Train Loss: {avg_train_loss:.4f} | 🎯 Train Acc: {train_acc:.4f} | "
-                        f"📊 Val Loss: {val_loss:.4f} | 💡 Val Acc: {val_acc:.4f}"
+                    logger.info(
+                        f" Repeat {repeat}/{num_repeats} |  Epoch [{epoch}/{self.epochs}] "
+                        f" Train Loss: {avg_train_loss:.4f} |  Train Acc: {train_acc:.4f} | "
+                        f" Val Loss: {val_loss:.4f} |  Val Acc: {val_acc:.4f}"
                     )
 
                 # 加载最佳模型评估测试集
@@ -298,12 +340,13 @@ class ModelTrainCrossValidation(ModelTrainer):
                 y_true, y_pred = self.model_test(self.model, test_loader)
                 recall = recall_score(y_true, y_pred, average="macro")
                 f1 = f1_score(y_true, y_pred, average="macro")
-
+                cm = confusion_matrix(y_true, y_pred)
                 fold_results[fold_key]["summary"] = {
                     "best_val_acc": best_val_acc,
                     "final_test_acc": test_acc,
                     "recall": recall,
-                    "f1": f1
+                    "f1": f1,
+                    "confusion_matrix": cm.tolist()  # 将混淆矩阵转换为列表
                 }
 
                 # 保存最优模型
@@ -314,6 +357,9 @@ class ModelTrainCrossValidation(ModelTrainer):
         # 保存整个 JSON 文件
         save_json_path = os.path.join(save_path, "logs.json")
         save_json(all_results, save_json_path)
+        end_time = datetime.datetime.now()
+        logger.info(f'program time: {end_time - start_time}')
+        logger.info('Fineshed!')
 
     def model_save(self, model_state_dict, save_path, repeat_index, current_time, fold):
         filename = f"best_model_repeat{repeat_index}-{fold}-{current_time}.pth"
